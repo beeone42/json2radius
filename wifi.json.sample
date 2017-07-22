@@ -1,0 +1,32 @@
+{
+  "programs": [
+    "Staff",
+    "Guest",
+    "Press"
+  ],
+  "users": [
+    {
+      "login": "root",
+      "program": "Staff",
+      "password": "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8",
+      "isDisabled": false
+    },
+    {
+      "login": "beeone",
+      "program": "Staff",
+      "password": "e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4",
+      "isDisabled": false
+    },
+    {
+      "login": "alex",
+      "program": "Guest",
+      "password": "5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8",
+      "isDisabled": false
+    },
+    {
+      "login": "freenews",
+      "program": "Press",
+      "password": "e5e9fa1ba31ecd1ae84f75caaa474f3a663f05f4",
+      "isDisabled": false
+    }
+}
