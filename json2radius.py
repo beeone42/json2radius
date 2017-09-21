@@ -24,6 +24,8 @@ if __name__ == "__main__":
     config = open_and_load_json(CONFIG_FILE)
     url = config['url']
     programs = open_and_load_json(config['programs'])
+    vlans = {}
+    total = 0
     print url
     try:
         print "downloading datas..."
@@ -42,20 +44,34 @@ if __name__ == "__main__":
         cur.execute("TRUNCATE radcheck")
         cur.execute("TRUNCATE radreply")
         cur.execute("TRUNCATE radusergroup")
+        cur.execute("ALTER SEQUENCE radcheck_id_seq RESTART WITH 1")
+        cur.execute("ALTER SEQUENCE radreply_id_seq RESTART WITH 1")
+        print "Scanning programs..."
+        for p in res['programs']:
+            if p in programs:
+                vlans[p] = programs[p]
+            else:
+                vlans[p] = config['default_vlan']
+            print p + ": vlan " + vlans[p]
+        print "Scanning users..."
         for u in res['users']:
-            print u['login']
+            #print u['login'] + " : " + vlans[u['program']]
+            total = total + 1
             cur.execute("INSERT INTO radcheck (username, attribute, op, value) VALUES (%s, %s, ':=', %s)",
-                        (u['login'], config['db_hash'] + '-Password', u['password']))
+                        (u['login'], config['db_hash'] + '-Password', config['db_prefix'] + u['password']))
             cur.execute("INSERT INTO radreply (username, attribute, op, value) VALUES (%s, 'Tunnel-Type',             '=', 'VLAN')",
                         [u['login']])
             cur.execute("INSERT INTO radreply (username, attribute, op, value) VALUES (%s, 'Tunnel-Medium-Type',      '=', 'IEEE-802')",
                         [u['login']])
             cur.execute("INSERT INTO radreply (username, attribute, op, value) VALUES (%s, 'Tunnel-Private-Group-Id', '=', %s)",
-                        (u['login'], programs[u['program']]))
+                        (u['login'], vlans[u['program']]))
             cur.execute("INSERT INTO radusergroup (username, groupname) VALUES (%s, %s)",
                         (u['login'], u['program']))
-        co.commit()
+#        co.commit()
         co.close()
-        print "done"
+        print "done (%d users)" % total
     except Exception as e:
-        print e
+        print "Error:"
+        print e.message
+        print sys.exc_info()
+        print "Exiting"

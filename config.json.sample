@@ -1,9 +1,12 @@
 {
     "url":"https://api.domain.com/wifi/users?key=abcdef012345",
+    "programs":"programs.json",
     "db_host":"localhost",
     "db_port":"5432",
     "db_user":"radius",
     "db_pass":"P4ssW0rd",
     "db_data":"radius",
-    "db_hash":"Cleartext"
+    "db_hash":"Cleartext",
+    "db_prefix":"",
+    "default_vlan":"19"
 }
